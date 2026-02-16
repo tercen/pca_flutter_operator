@@ -2,6 +2,8 @@
   "name": "PCA Explorer",
   "description": "Interactive PCA visualization for Tercen — scores, loadings, biplots, and variance plots.",
   "isWebApp": true,
+  "isViewOnly": false,
+  "entryType": "app",
   "serve": "build/web",
   "tags": ["pca", "dimensionality-reduction"],
   "authors": ["tercen"],
