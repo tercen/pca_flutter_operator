@@ -1,0 +1,9 @@
+{
+  "name": "PCA Explorer",
+  "description": "Interactive PCA visualization for Tercen — scores, loadings, biplots, and variance plots.",
+  "isWebApp": true,
+  "serve": "build/web",
+  "tags": ["pca", "dimensionality-reduction"],
+  "authors": ["tercen"],
+  "urls": ["https://github.com/tercen/pca_flutter_operator"]
+}
