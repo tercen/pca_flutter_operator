@@ -3,7 +3,7 @@
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-build/
+build/*
 
 # Tercen requirement: web build MUST be committed
 !build/web/

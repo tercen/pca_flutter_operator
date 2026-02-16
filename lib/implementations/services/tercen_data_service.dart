@@ -202,48 +202,54 @@ class TercenDataService implements DataService {
 
   @override
   Future<void> saveResults(PcaData data) async {
-    await _ctx.progress('Saving results...', actual: 0, total: 3);
+    try {
+      await _ctx.progress('Saving results...', actual: 0, total: 3);
 
-    final nc = data.numComponents;
-    final nRows = data.loadings.length * data.scores.length;
+      final nc = data.numComponents;
+      final nRows = data.loadings.length * data.scores.length;
 
-    // Build flat arrays — one row per ri x ci (loadings repeated across ci, scores repeated across ri)
-    final outCi = <int>[];
-    final outRi = <int>[];
-    final outPc = List.generate(nc, (_) => <double>[]);
+      // Build flat arrays — one row per ri x ci (loadings repeated across ci, scores repeated across ri)
+      final outCi = <int>[];
+      final outRi = <int>[];
+      final outPc = List.generate(nc, (_) => <double>[]);
 
-    for (final loading in data.loadings) {
-      for (final score in data.scores) {
-        outRi.add(loading.ri);
-        outCi.add(score.ci);
-        for (int k = 0; k < nc; k++) {
-          outPc[k].add(loading[k]);
+      for (final loading in data.loadings) {
+        for (final score in data.scores) {
+          outRi.add(loading.ri);
+          outCi.add(score.ci);
+          for (int k = 0; k < nc; k++) {
+            outPc[k].add(loading[k]);
+          }
         }
       }
+
+      await _ctx.progress('Building table...', actual: 1, total: 3);
+
+      // Namespace prefix for output columns
+      final colNames = List.generate(nc, (k) => 'PC${k + 1}');
+      final nsMap = await _ctx.addNamespace(colNames);
+
+      final table = Table();
+      table.nRows = nRows;
+
+      // System columns (no namespace)
+      table.columns.add(AbstractOperatorContext.makeInt32Column('.ci', outCi));
+      table.columns.add(AbstractOperatorContext.makeInt32Column('.ri', outRi));
+
+      // Loading columns: PC1..PCn
+      for (int k = 0; k < nc; k++) {
+        final name = nsMap['PC${k + 1}'] ?? 'PC${k + 1}';
+        table.columns.add(AbstractOperatorContext.makeFloat64Column(name, outPc[k]));
+      }
+
+      await _ctx.progress('Uploading...', actual: 2, total: 3);
+      await _ctx.saveTable(table);
+      await _ctx.progress('Done', actual: 3, total: 3);
+    } catch (e) {
+      debugPrint('Tercen save error: $e');
+      await _printDiagnosticReport();
+      rethrow;
     }
-
-    await _ctx.progress('Building table...', actual: 1, total: 3);
-
-    // Namespace prefix for output columns
-    final colNames = List.generate(nc, (k) => 'PC${k + 1}');
-    final nsMap = await _ctx.addNamespace(colNames);
-
-    final table = Table();
-    table.nRows = nRows;
-
-    // System columns (no namespace)
-    table.columns.add(AbstractOperatorContext.makeInt32Column('.ci', outCi));
-    table.columns.add(AbstractOperatorContext.makeInt32Column('.ri', outRi));
-
-    // Loading columns: PC1..PCn
-    for (int k = 0; k < nc; k++) {
-      final name = nsMap['PC${k + 1}'] ?? 'PC${k + 1}';
-      table.columns.add(AbstractOperatorContext.makeFloat64Column(name, outPc[k]));
-    }
-
-    await _ctx.progress('Uploading...', actual: 2, total: 3);
-    await _ctx.saveTable(table);
-    await _ctx.progress('Done', actual: 3, total: 3);
   }
 
   // --- Helpers ---
