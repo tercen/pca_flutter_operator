@@ -290,10 +290,10 @@ class TercenDataService implements DataService {
 
       await ctx.progress('Building table...', actual: 1, total: 3);
 
-      // Namespace prefix — loading cols: PC1..PCn, score cols: score1..scoren
-      final loadingNames = List.generate(nc, (k) => 'PC${k + 1}');
-      final scoreNames = List.generate(nc, (k) => 'score${k + 1}');
-      final nsMap = await ctx.addNamespace([...loadingNames, ...scoreNames]);
+      // Match Shiny column names: PC1..PCn = scores, X1..Xn = loadings
+      final scoreNames = List.generate(nc, (k) => 'PC${k + 1}');
+      final loadingNames = List.generate(nc, (k) => 'X${k + 1}');
+      final nsMap = await ctx.addNamespace([...scoreNames, ...loadingNames]);
 
       final table = Table();
       table.nRows = nRows;
@@ -302,18 +302,18 @@ class TercenDataService implements DataService {
       table.columns.add(AbstractOperatorContext.makeInt32Column('.ci', outCi));
       table.columns.add(AbstractOperatorContext.makeInt32Column('.ri', outRi));
 
-      // Loading columns: PC1..PCn (variable contributions)
+      // Score columns: PC1..PCn (observation projections)
       for (int k = 0; k < nc; k++) {
         final name = nsMap['PC${k + 1}'] ?? 'PC${k + 1}';
         table.columns.add(
-            AbstractOperatorContext.makeFloat64Column(name, outLoading[k]));
+            AbstractOperatorContext.makeFloat64Column(name, outScore[k]));
       }
 
-      // Score columns: score1..scoren (observation projections)
+      // Loading columns: X1..Xn (variable contributions)
       for (int k = 0; k < nc; k++) {
-        final name = nsMap['score${k + 1}'] ?? 'score${k + 1}';
+        final name = nsMap['X${k + 1}'] ?? 'X${k + 1}';
         table.columns.add(
-            AbstractOperatorContext.makeFloat64Column(name, outScore[k]));
+            AbstractOperatorContext.makeFloat64Column(name, outLoading[k]));
       }
 
       // Diagnostic: dump table structure

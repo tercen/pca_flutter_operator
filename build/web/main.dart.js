@@ -76833,7 +76833,7 @@ J.dc(a5,a6,"PC"+A.o(a7+1))}a8=a5
 a9=m
 b0=J.ec(a9,c3)
 for(b1=0;b1<a9;++b1){b2=b1
-J.dc(b0,b1,"score"+A.o(b2+1))}b3=b0
+J.dc(b0,b1,"X"+A.o(b2+1))}b3=b0
 c3=A.a4(a8,c3)
 b4=c3
 J.YQ(b4,b3)
@@ -76846,9 +76846,9 @@ b6.ax.F(0,A.awh(".ci",k))
 b6.ax.F(0,A.awh(".ri",j))
 for(b7=0;b7<m;++b7){c8=J.cw(b5,"PC"+A.o(b7+1))
 b8=c8==null?"PC"+A.o(b7+1):c8
-b6.ax.F(0,A.awg(b8,J.cw(f,b7)))}for(b9=0;b9<m;++b9){b8=J.cw(b5,"score"+A.o(b9+1))
-c0=b8==null?"score"+A.o(b9+1):b8
-b6.ax.F(0,A.awg(c0,J.cw(b,b9)))}b4=n.b
+b6.ax.F(0,A.awg(b8,J.cw(b,b7)))}for(b9=0;b9<m;++b9){b8=J.cw(b5,"X"+A.o(b9+1))
+c0=b8==null?"X"+A.o(b9+1):b8
+b6.ax.F(0,A.awg(c0,J.cw(f,b9)))}b4=n.b
 b4=A.o(b4==null?null:A.y(b4))
 c3=n.b
 c3=c3==null?null:c3.as
