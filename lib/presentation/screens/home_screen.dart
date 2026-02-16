@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_colors_dark.dart';
 import '../../core/theme/app_spacing.dart';
 import '../../core/theme/app_text_styles.dart';
 import '../../domain/models/pca_data.dart';
 import '../providers/app_state_provider.dart';
-import '../providers/theme_provider.dart';
 import '../widgets/app_shell.dart';
 import '../widgets/color_legend.dart';
 import '../widgets/hover_tooltip.dart';
@@ -108,8 +106,10 @@ class _MainContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AppStateProvider>();
-    final isDark = context.watch<ThemeProvider>().isDarkMode;
-    final bgColor = isDark ? AppColorsDark.background : AppColors.background;
+    // Graph area always uses light theme for maximum readability.
+    // Dark mode only applies to the chrome (left panel, top bar).
+    const isDark = false;
+    const bgColor = Colors.white;
 
     if (provider.isLoading) {
       return Container(
@@ -125,11 +125,11 @@ class _MainContent extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.error_outline, size: 48, color: isDark ? AppColorsDark.error : AppColors.error),
+              Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: AppSpacing.md),
-              Text('Error loading data', style: AppTextStyles.h3.copyWith(color: isDark ? AppColorsDark.textPrimary : AppColors.textPrimary)),
+              Text('Error loading data', style: AppTextStyles.h3.copyWith(color: AppColors.textPrimary)),
               const SizedBox(height: AppSpacing.sm),
-              Text(provider.error!, style: AppTextStyles.body.copyWith(color: isDark ? AppColorsDark.textSecondary : AppColors.textSecondary)),
+              Text(provider.error!, style: AppTextStyles.body.copyWith(color: AppColors.textSecondary)),
             ],
           ),
         ),
@@ -155,7 +155,7 @@ class _MainContent extends StatelessWidget {
                 child: Text(
                   'Zoom with scroll wheel. Drag to rotate.',
                   style: AppTextStyles.labelSmall.copyWith(
-                    color: isDark ? AppColorsDark.textSecondary : AppColors.textSecondary,
+                    color: AppColors.textSecondary,
                   ),
                 ),
               ),
