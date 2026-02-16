@@ -316,14 +316,22 @@ class TercenDataService implements DataService {
             AbstractOperatorContext.makeFloat64Column(name, outScore[k]));
       }
 
+      // Diagnostic: dump table structure
+      print('PCA Explorer: task type=${ctx.task?.runtimeType}, '
+          'id=${ctx.task?.id}, '
+          'isComputationTask=${ctx.task is ComputationTask}');
       print('PCA Explorer: saving table with $nRows rows, '
-          '${table.columns.length} columns '
-          '(.ci, .ri, $nc loadings, $nc scores)');
+          '${table.columns.length} columns');
+      for (final col in table.columns) {
+        print('  col: ${col.name} type=${col.type} nRows=${col.nRows} '
+            'values=${col.values?.runtimeType} cValues=${col.cValues.runtimeType}');
+      }
 
       await ctx.progress('Uploading...', actual: 2, total: 3);
       await ctx.saveTable(table);
       await ctx.progress('Done', actual: 3, total: 3);
-      print('PCA Explorer: save completed successfully');
+      print('PCA Explorer: save completed, '
+          'task state=${ctx.task?.state?.runtimeType}');
     } catch (e) {
       print('PCA Explorer: Tercen save error: $e');
       await _printDiagnosticReport();
