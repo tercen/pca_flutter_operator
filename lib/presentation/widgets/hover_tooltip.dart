@@ -44,19 +44,29 @@ class HoverTooltip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '${ann.supergroup} / ${ann.testCondition}',
-              style: AppTextStyles.label.copyWith(color: textColor),
-            ),
+            // Show first 2 annotation fields as header
+            if (data.annotationFields.length >= 2)
+              Text(
+                '${ann[data.annotationFields[0]]} / ${ann[data.annotationFields[1]]}',
+                style: AppTextStyles.label.copyWith(color: textColor),
+              )
+            else if (data.annotationFields.isNotEmpty)
+              Text(
+                ann[data.annotationFields[0]],
+                style: AppTextStyles.label.copyWith(color: textColor),
+              )
+            else
+              Text(
+                'Sample $sampleIndex',
+                style: AppTextStyles.label.copyWith(color: textColor),
+              ),
             const SizedBox(height: 2),
-            Text(
-              'Barcode: ${ann.barcode}',
-              style: AppTextStyles.bodySmall.copyWith(color: mutedColor),
-            ),
-            Text(
-              'Unit: ${ann.instrumentUnit}',
-              style: AppTextStyles.bodySmall.copyWith(color: mutedColor),
-            ),
+            // Show remaining annotation fields (up to 2 more)
+            for (var i = 2; i < data.annotationFields.length && i < 4; i++)
+              Text(
+                '${data.annotationFields[i]}: ${ann[data.annotationFields[i]]}',
+                style: AppTextStyles.bodySmall.copyWith(color: mutedColor),
+              ),
             const SizedBox(height: 4),
             for (var i = 0; i < data.numComponents && i < 3; i++)
               Text(

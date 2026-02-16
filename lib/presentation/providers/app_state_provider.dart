@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/utils/web_download.dart';
 import '../../di/service_locator.dart';
 import '../../domain/models/pca_data.dart';
 import '../../domain/services/data_service.dart';
@@ -26,6 +25,14 @@ class AppStateProvider extends ChangeNotifier {
 
     try {
       _data = await _dataService.loadData();
+      // Set defaults from data
+      if (_data!.defaultColorBy.isNotEmpty) {
+        _colorBy = _data!.defaultColorBy;
+        _labelBy = _data!.defaultColorBy;
+      } else if (_data!.annotationFields.isNotEmpty) {
+        _colorBy = _data!.annotationFields.first;
+        _labelBy = _data!.annotationFields.first;
+      }
       _updateColorMapping();
     } catch (e) {
       _error = e.toString();
@@ -44,7 +51,7 @@ class AppStateProvider extends ChangeNotifier {
   }
 
   // --- APPEARANCE: Color By (dropdown) ---
-  String _colorBy = 'Supergroup';
+  String _colorBy = '';
   String get colorBy => _colorBy;
   void setColorBy(String value) {
     _colorBy = value;
@@ -53,7 +60,7 @@ class AppStateProvider extends ChangeNotifier {
   }
 
   // --- APPEARANCE: Label By (dropdown) ---
-  String _labelBy = 'Supergroup';
+  String _labelBy = '';
   String get labelBy => _labelBy;
   void setLabelBy(String value) {
     _labelBy = value;
@@ -176,7 +183,7 @@ class AppStateProvider extends ChangeNotifier {
   ];
 
   void _updateColorMapping() {
-    if (_data == null) return;
+    if (_data == null || _colorBy.isEmpty) return;
     final values = _data!.getAnnotationValues(_colorBy);
     _colorMap = {
       for (var i = 0; i < values.length; i++)
@@ -200,36 +207,24 @@ class AppStateProvider extends ChangeNotifier {
 
   // --- ACTIONS: Save state ---
   bool _hasSaved = false;
+  bool _isSaving = false;
   bool get hasSaved => _hasSaved;
-  void savePcaResults() {
-    if (_data == null) return;
-    _generateAndDownloadCsv();
-    _hasSaved = true;
+  bool get isSaving => _isSaving;
+
+  Future<void> savePcaResults() async {
+    if (_data == null || _hasSaved || _isSaving) return;
+    _isSaving = true;
     notifyListeners();
-  }
 
-  /// Generate Tercen cross-tab CSV: every .ri × .ci combination.
-  /// Columns: ds200.PC1..PC5, ds200.X1..X5, .ri, .ci
-  void _generateAndDownloadCsv() {
-    final data = _data!;
-    final nc = data.numComponents;
-    final buf = StringBuffer();
-
-    // Header
-    final pcHeaders = List.generate(nc, (i) => '"ds200.PC${i + 1}"');
-    final xHeaders = List.generate(nc, (i) => '"ds200.X${i + 1}"');
-    buf.writeln('${pcHeaders.join(",")},${xHeaders.join(",")},".ri",".ci"');
-
-    // Cross-tab: one row per .ri × .ci
-    for (final loading in data.loadings) {
-      for (final score in data.scores) {
-        final pcValues = List.generate(nc, (i) => loading[i].toString());
-        final xValues = List.generate(nc, (i) => score[i].toString());
-        buf.writeln(
-            '${pcValues.join(",")},${xValues.join(",")},${loading.ri},${score.ci}');
-      }
+    try {
+      await _dataService.saveResults(_data!);
+      _hasSaved = true;
+    } catch (e) {
+      _error = 'Save failed: $e';
+      debugPrint('Save error: $e');
+    } finally {
+      _isSaving = false;
+      notifyListeners();
     }
-
-    downloadFile(buf.toString(), 'pca_results.csv');
   }
 }

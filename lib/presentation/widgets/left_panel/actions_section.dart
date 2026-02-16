@@ -16,12 +16,26 @@ class ActionsSection extends StatelessWidget {
         SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
-            onPressed: provider.hasSaved ? null : () => provider.savePcaResults(),
-            icon: FaIcon(
-              provider.hasSaved ? FontAwesomeIcons.check : FontAwesomeIcons.floppyDisk,
-              size: 14,
-            ),
-            label: Text(provider.hasSaved ? 'Saved' : 'Save Results'),
+            onPressed: (provider.hasSaved || provider.isSaving)
+                ? null
+                : () => provider.savePcaResults(),
+            icon: provider.isSaving
+                ? const SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : FaIcon(
+                    provider.hasSaved
+                        ? FontAwesomeIcons.check
+                        : FontAwesomeIcons.floppyDisk,
+                    size: 14,
+                  ),
+            label: Text(provider.isSaving
+                ? 'Saving...'
+                : provider.hasSaved
+                    ? 'Saved'
+                    : 'Save Results'),
           ),
         ),
       ],

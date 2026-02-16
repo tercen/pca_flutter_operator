@@ -18,13 +18,24 @@ class MockDataService implements DataService {
     final variance = _parseVariance(results[2]);
     final annotations = _parseAnnotations(results[3]);
 
+    final fieldNames = annotations.isNotEmpty
+        ? annotations.first.fields.keys.toList()
+        : <String>[];
+
     return PcaData(
       scores: scores,
       loadings: loadings,
       variance: variance,
       annotations: annotations,
       numComponents: variance.length,
+      annotationFields: fieldNames,
+      defaultColorBy: fieldNames.isNotEmpty ? fieldNames.first : '',
     );
+  }
+
+  @override
+  Future<void> saveResults(PcaData data) async {
+    // Mock mode: no-op
   }
 
   List<PcaScore> _parseScores(String csv) {
@@ -55,13 +66,17 @@ class MockDataService implements DataService {
 
   List<SampleAnnotation> _parseAnnotations(String csv) {
     final rows = const CsvToListConverter(eol: '\n').convert(csv);
-    return rows.skip(1).where((r) => r.length >= 6).map((row) => SampleAnnotation(
-      ci: (row[0] as num).toInt(),
-      instrumentUnit: row[1].toString(),
-      supergroup: row[2].toString(),
-      testCondition: row[3].toString(),
-      barcode: row[4].toString(),
-      row: (row[5] as num).toDouble(),
-    )).toList();
+    if (rows.isEmpty) return [];
+    final headers = rows.first.map((h) => h.toString()).toList();
+    return rows.skip(1).where((r) => r.length >= headers.length).map((row) {
+      final fields = <String, String>{};
+      for (int i = 1; i < headers.length; i++) {
+        fields[headers[i]] = row[i].toString();
+      }
+      return SampleAnnotation(
+        ci: (row[0] as num).toInt(),
+        fields: fields,
+      );
+    }).toList();
   }
 }

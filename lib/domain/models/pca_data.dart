@@ -25,23 +25,14 @@ class PcaLoading {
   double operator [](int pcIndex) => values[pcIndex];
 }
 
-/// Metadata for one observation (sample)
+/// Metadata for one observation (sample) — dynamic fields from Tercen cselect()
 class SampleAnnotation {
   final int ci;
-  final String instrumentUnit;
-  final String supergroup;
-  final String testCondition;
-  final String barcode;
-  final double row;
+  final Map<String, String> fields;
 
-  const SampleAnnotation({
-    required this.ci,
-    required this.instrumentUnit,
-    required this.supergroup,
-    required this.testCondition,
-    required this.barcode,
-    required this.row,
-  });
+  const SampleAnnotation({required this.ci, required this.fields});
+
+  String operator [](String fieldName) => fields[fieldName] ?? '';
 }
 
 /// Variance explained by each PC
@@ -60,6 +51,8 @@ class PcaData {
   final List<PcVariance> variance;
   final List<SampleAnnotation> annotations;
   final int numComponents;
+  final List<String> annotationFields;
+  final String defaultColorBy;
 
   const PcaData({
     required this.scores,
@@ -67,11 +60,9 @@ class PcaData {
     required this.variance,
     required this.annotations,
     required this.numComponents,
+    required this.annotationFields,
+    required this.defaultColorBy,
   });
-
-  /// Available annotation field names for dropdowns
-  List<String> get annotationFields =>
-      ['Supergroup', 'Test Condition', 'Instrument Unit', 'Barcode'];
 
   /// PC labels for dropdowns
   List<String> get pcLabels =>
@@ -79,34 +70,13 @@ class PcaData {
 
   /// Get all unique values for a given annotation field
   List<String> getAnnotationValues(String field) {
-    switch (field) {
-      case 'Supergroup':
-        return annotations.map((a) => a.supergroup).toSet().toList()..sort();
-      case 'Test Condition':
-        return annotations.map((a) => a.testCondition).toSet().toList()..sort();
-      case 'Instrument Unit':
-        return annotations.map((a) => a.instrumentUnit).toSet().toList()..sort();
-      case 'Barcode':
-        return annotations.map((a) => a.barcode).toSet().toList()..sort();
-      default:
-        return [];
-    }
+    return annotations.map((a) => a[field]).where((v) => v.isNotEmpty).toSet().toList()..sort();
   }
 
   /// Get annotation value for a sample by field name
   String getAnnotationForSample(int ci, String field) {
-    final ann = annotations.firstWhere((a) => a.ci == ci);
-    switch (field) {
-      case 'Supergroup':
-        return ann.supergroup;
-      case 'Test Condition':
-        return ann.testCondition;
-      case 'Instrument Unit':
-        return ann.instrumentUnit;
-      case 'Barcode':
-        return ann.barcode;
-      default:
-        return '';
-    }
+    final ann = annotations.firstWhere((a) => a.ci == ci,
+        orElse: () => SampleAnnotation(ci: ci, fields: {}));
+    return ann[field];
   }
 }
