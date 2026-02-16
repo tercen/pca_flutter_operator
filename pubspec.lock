@@ -284,43 +284,47 @@ packages:
     dependency: transitive
     description:
       path: sci_base
-      ref: "1.12.0"
-      resolved-ref: "3d6bdaff93b4e3c2453221852522a18943ddb75f"
+      ref: "1.13.0"
+      resolved-ref: f2137c3ee0b2ce032fe58a149a77e8a971234f4a
       url: "https://github.com/tercen/sci_tercen_client"
     source: git
-    version: "1.12.0"
+    version: "1.13.0"
   sci_http_client:
     dependency: transitive
     description:
       path: sci_http_client
-      ref: "1.12.0"
-      resolved-ref: "3d6bdaff93b4e3c2453221852522a18943ddb75f"
+      ref: "1.13.0"
+      resolved-ref: f2137c3ee0b2ce032fe58a149a77e8a971234f4a
       url: "https://github.com/tercen/sci_tercen_client"
     source: git
-    version: "1.12.0"
+    version: "1.13.0"
   sci_tercen_client:
     dependency: "direct main"
     description:
-      path: "C:/Users/Work/Documents/GitHub/sci_tercen_client/sci_tercen_client"
-      relative: false
-    source: path
-    version: "1.12.0"
+      path: sci_tercen_client
+      ref: "1.13.0"
+      resolved-ref: f2137c3ee0b2ce032fe58a149a77e8a971234f4a
+      url: "https://github.com/tercen/sci_tercen_client"
+    source: git
+    version: "1.13.0"
   sci_tercen_context:
     dependency: "direct main"
     description:
-      path: "C:/Users/Work/Documents/GitHub/sci_tercen_client/sci_tercen_context"
-      relative: false
-    source: path
-    version: "1.12.0"
+      path: sci_tercen_context
+      ref: "1.13.0"
+      resolved-ref: f2137c3ee0b2ce032fe58a149a77e8a971234f4a
+      url: "https://github.com/tercen/sci_tercen_client"
+    source: git
+    version: "1.13.0"
   sci_tercen_model:
     dependency: transitive
     description:
       path: sci_tercen_model
-      ref: "1.12.0"
-      resolved-ref: "3d6bdaff93b4e3c2453221852522a18943ddb75f"
+      ref: "1.13.0"
+      resolved-ref: f2137c3ee0b2ce032fe58a149a77e8a971234f4a
       url: "https://github.com/tercen/sci_tercen_client"
     source: git
-    version: "1.12.0"
+    version: "1.13.0"
   shared_preferences:
     dependency: "direct main"
     description:

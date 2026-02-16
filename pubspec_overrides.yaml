@@ -1,5 +1,0 @@
-dependency_overrides:
-  sci_tercen_context:
-    path: C:/Users/Work/Documents/GitHub/sci_tercen_client/sci_tercen_context
-  sci_tercen_client:
-    path: C:/Users/Work/Documents/GitHub/sci_tercen_client/sci_tercen_client

@@ -21,12 +21,12 @@ dependencies:
   sci_tercen_context:
     git:
       url: https://github.com/tercen/sci_tercen_client
-      ref: 1.12.0
+      ref: 1.13.0
       path: sci_tercen_context
   sci_tercen_client:
     git:
       url: https://github.com/tercen/sci_tercen_client
-      ref: 1.12.0
+      ref: 1.13.0
       path: sci_tercen_client
 
 dev_dependencies:
