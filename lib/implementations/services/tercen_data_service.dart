@@ -199,6 +199,16 @@ class TercenDataService implements DataService {
 
       await ctx.progress('Done', actual: 5, total: 5);
 
+      print('PCA Explorer: SUCCESS — ${scores.length} scores, ${loadings.length} loadings, ${variance.length} PCs');
+      print('PCA Explorer: annotationFields=$fieldList');
+      print('PCA Explorer: defaultColorBy=$defaultColorBy');
+      if (scores.isNotEmpty) {
+        print('PCA Explorer: first score ci=${scores.first.ci}, values=${scores.first.values.take(3).toList()}');
+      }
+      if (annotations.isNotEmpty) {
+        print('PCA Explorer: first annotation ci=${annotations.first.ci}, fields=${annotations.first.fields}');
+      }
+
       return PcaData(
         scores: scores,
         loadings: loadings,

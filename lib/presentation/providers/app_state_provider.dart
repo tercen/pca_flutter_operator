@@ -25,6 +25,7 @@ class AppStateProvider extends ChangeNotifier {
 
     try {
       _data = await _dataService.loadData();
+      print('PCA Explorer: AppState received data — ${_data!.scores.length} scores, fields=${_data!.annotationFields}, defaultColorBy=${_data!.defaultColorBy}');
       // Set defaults from data
       if (_data!.defaultColorBy.isNotEmpty) {
         _colorBy = _data!.defaultColorBy;
@@ -33,6 +34,7 @@ class AppStateProvider extends ChangeNotifier {
         _colorBy = _data!.annotationFields.first;
         _labelBy = _data!.annotationFields.first;
       }
+      print('PCA Explorer: AppState colorBy=$_colorBy, labelBy=$_labelBy');
       _updateColorMapping();
     } catch (e) {
       _error = e.toString();
@@ -221,7 +223,7 @@ class AppStateProvider extends ChangeNotifier {
       _hasSaved = true;
     } catch (e) {
       _error = 'Save failed: $e';
-      debugPrint('Save error: $e');
+      print('Save error: $e');
     } finally {
       _isSaving = false;
       notifyListeners();
