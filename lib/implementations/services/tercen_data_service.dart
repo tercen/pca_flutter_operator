@@ -108,12 +108,16 @@ class TercenDataService implements DataService {
 
       // 7. Compute PCA
       await ctx.progress('Computing PCA...', actual: 3, total: 5);
+      print('PCA Explorer: scaleSpots=$scaleSpots, nComponents=$nComponentsProp, subtractComponent=$subtractComponent');
+      print('PCA Explorer: matrix ${nObs}x$nVars');
       final pcaResult = PcaComputation.compute(
         X: X,
         scale: scaleSpots,
         nComponents: min(nComponentsProp, min(nObs - 1, nVars)),
         subtractComponent: subtractComponent,
       );
+      print('PCA Explorer: top 5 eigenvalues=${pcaResult.allEigenvalues.take(5).toList()}');
+      print('PCA Explorer: totalVariance=${pcaResult.allEigenvalues.fold(0.0, (a, b) => a + b).toStringAsFixed(2)}');
 
       // 8. Build index maps from column/row metadata
       final colMetadata = _buildIndexMap(colData);
@@ -144,13 +148,14 @@ class TercenDataService implements DataService {
             .add(PcaLoading(ri: ri, variable: varName, values: pcaResult.loadings[j]));
       }
 
-      // 11. Build variance
+      // 11. Build variance — ALL components for screeplot
       final variance = <PcVariance>[];
-      for (int k = 0; k < pcaResult.nComponents; k++) {
+      for (int k = 0; k < pcaResult.allEigenvalues.length; k++) {
+        if (pcaResult.allEigenvalues[k] < 1e-12) continue;
         variance.add(PcVariance(
           label: 'PC${k + 1}',
-          variance: pcaResult.eigenvalues[k],
-          percent: pcaResult.variancePercent[k],
+          variance: pcaResult.allEigenvalues[k],
+          percent: pcaResult.allVariancePercent[k],
         ));
       }
 

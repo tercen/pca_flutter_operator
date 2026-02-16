@@ -8,13 +8,19 @@ class PcaResult {
   /// Loadings matrix: n_vars x n_comp (variable contributions to PCs)
   final List<List<double>> loadings;
 
-  /// Eigenvalues (variance captured by each PC, before normalization)
+  /// Eigenvalues for the first nComponents PCs
   final List<double> eigenvalues;
 
-  /// Percentage of total variance explained by each PC (0-100)
+  /// Percentage of total variance for the first nComponents PCs (0-100)
   final List<double> variancePercent;
 
-  /// Number of components returned
+  /// ALL eigenvalues from decomposition (for screeplot)
+  final List<double> allEigenvalues;
+
+  /// ALL variance percentages (for screeplot)
+  final List<double> allVariancePercent;
+
+  /// Number of score/loading components returned
   final int nComponents;
 
   PcaResult({
@@ -22,6 +28,8 @@ class PcaResult {
     required this.loadings,
     required this.eigenvalues,
     required this.variancePercent,
+    required this.allEigenvalues,
+    required this.allVariancePercent,
     required this.nComponents,
   });
 }
@@ -136,12 +144,16 @@ class PcaComputation {
     final totalVariance = eigenvalues.fold(0.0, (a, b) => a + b);
     final variancePercent = List.generate(nc, (k) =>
         totalVariance > 0 ? 100.0 * eigenvalues[k] / totalVariance : 0.0);
+    final allVariancePercent = List.generate(eigenvalues.length, (k) =>
+        totalVariance > 0 ? 100.0 * eigenvalues[k] / totalVariance : 0.0);
 
     return PcaResult(
       scores: scores,
       loadings: loadings,
       eigenvalues: eigenvalues.sublist(0, nc),
       variancePercent: variancePercent,
+      allEigenvalues: List.unmodifiable(eigenvalues),
+      allVariancePercent: allVariancePercent,
       nComponents: nc,
     );
   }
