@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:flutter/foundation.dart';
 import 'package:sci_tercen_context/sci_tercen_context.dart';
 
 import '../../core/math/pca_computation.dart';
@@ -8,37 +7,53 @@ import '../../domain/services/data_service.dart';
 import 'mock_data_service.dart';
 
 class TercenDataService implements DataService {
-  final AbstractOperatorContext _ctx;
+  final ServiceFactoryBase _factory;
+  final String _taskId;
   final MockDataService _mockService = MockDataService();
 
-  TercenDataService(this._ctx);
+  AbstractOperatorContext? _ctx;
+
+  TercenDataService(this._factory, this._taskId);
+
+  Future<AbstractOperatorContext> _getContext() async {
+    if (_ctx != null) return _ctx!;
+    print('PCA Explorer: creating OperatorContext for taskId=$_taskId');
+    _ctx = await OperatorContext.create(
+      serviceFactory: _factory,
+      taskId: _taskId,
+    );
+    print('PCA Explorer: OperatorContext created, task=${_ctx!.task?.runtimeType}');
+    return _ctx!;
+  }
 
   @override
   Future<PcaData> loadData() async {
     try {
+      final ctx = await _getContext();
+
       // 1. Read operator properties
       final scaleSpots =
-          (await _ctx.opStringValue('Scale Spots', defaultValue: 'No')) ==
+          (await ctx.opStringValue('Scale Spots', defaultValue: 'No')) ==
               'Yes';
       final nComponentsProp =
-          (await _ctx.opDoubleValue('Number of Components', defaultValue: 5))
+          (await ctx.opDoubleValue('Number of Components', defaultValue: 5))
               .toInt();
       final subtractComponent =
-          (await _ctx.opDoubleValue('Subtract component', defaultValue: 0))
+          (await ctx.opDoubleValue('Subtract component', defaultValue: 0))
               .toInt();
 
       // 2. Fetch three tables
-      await _ctx.progress('Loading data...', actual: 0, total: 5);
-      final qtData = await _ctx.select(names: ['.y', '.ci', '.ri']);
-      await _ctx.progress('Loading column metadata...', actual: 1, total: 5);
-      final colData = await _ctx.cselect();
-      await _ctx.progress('Loading row metadata...', actual: 2, total: 5);
-      final rowData = await _ctx.rselect();
+      await ctx.progress('Loading data...', actual: 0, total: 5);
+      final qtData = await ctx.select(names: ['.y', '.ci', '.ri']);
+      await ctx.progress('Loading column metadata...', actual: 1, total: 5);
+      final colData = await ctx.cselect();
+      await ctx.progress('Loading row metadata...', actual: 2, total: 5);
+      final rowData = await ctx.rselect();
 
       // 3. Get color factors for default Color By
       List<String> colorFactors;
       try {
-        colorFactors = await _ctx.colors;
+        colorFactors = await ctx.colors;
       } catch (_) {
         colorFactors = [];
       }
@@ -92,7 +107,7 @@ class TercenDataService implements DataService {
       }
 
       // 7. Compute PCA
-      await _ctx.progress('Computing PCA...', actual: 3, total: 5);
+      await ctx.progress('Computing PCA...', actual: 3, total: 5);
       final pcaResult = PcaComputation.compute(
         X: X,
         scale: scaleSpots,
@@ -182,7 +197,7 @@ class TercenDataService implements DataService {
         }
       }
 
-      await _ctx.progress('Done', actual: 5, total: 5);
+      await ctx.progress('Done', actual: 5, total: 5);
 
       return PcaData(
         scores: scores,
@@ -194,7 +209,7 @@ class TercenDataService implements DataService {
         defaultColorBy: defaultColorBy,
       );
     } catch (e) {
-      debugPrint('Tercen data loading error: $e');
+      print('PCA Explorer: Tercen data loading error: $e');
       await _printDiagnosticReport();
       return _mockService.loadData();
     }
@@ -203,7 +218,9 @@ class TercenDataService implements DataService {
   @override
   Future<void> saveResults(PcaData data) async {
     try {
-      await _ctx.progress('Saving results...', actual: 0, total: 3);
+      final ctx = await _getContext();
+
+      await ctx.progress('Saving results...', actual: 0, total: 3);
 
       final nc = data.numComponents;
       final nRows = data.loadings.length * data.scores.length;
@@ -223,11 +240,11 @@ class TercenDataService implements DataService {
         }
       }
 
-      await _ctx.progress('Building table...', actual: 1, total: 3);
+      await ctx.progress('Building table...', actual: 1, total: 3);
 
       // Namespace prefix for output columns
       final colNames = List.generate(nc, (k) => 'PC${k + 1}');
-      final nsMap = await _ctx.addNamespace(colNames);
+      final nsMap = await ctx.addNamespace(colNames);
 
       final table = Table();
       table.nRows = nRows;
@@ -242,11 +259,11 @@ class TercenDataService implements DataService {
         table.columns.add(AbstractOperatorContext.makeFloat64Column(name, outPc[k]));
       }
 
-      await _ctx.progress('Uploading...', actual: 2, total: 3);
-      await _ctx.saveTable(table);
-      await _ctx.progress('Done', actual: 3, total: 3);
+      await ctx.progress('Uploading...', actual: 2, total: 3);
+      await ctx.saveTable(table);
+      await ctx.progress('Done', actual: 3, total: 3);
     } catch (e) {
-      debugPrint('Tercen save error: $e');
+      print('PCA Explorer: Tercen save error: $e');
       await _printDiagnosticReport();
       rethrow;
     }
@@ -278,31 +295,38 @@ class TercenDataService implements DataService {
   }
 
   Future<void> _printDiagnosticReport() async {
-    debugPrint('=== TERCEN DIAGNOSTIC REPORT ===');
-    debugPrint('Task: ${_ctx.taskId} (${_ctx.task?.runtimeType})');
+    print('=== TERCEN DIAGNOSTIC REPORT ===');
+    final ctx = _ctx;
+    if (ctx == null) {
+      print('Context not created yet — cannot report schemas');
+      print('=== END REPORT ===');
+      return;
+    }
+
+    print('Task: ${ctx.taskId} (${ctx.task?.runtimeType})');
 
     for (final entry in {
-      'schema (qtHash)': _ctx.schema,
-      'cschema (columnHash)': _ctx.cschema,
-      'rschema (rowHash)': _ctx.rschema,
+      'schema (qtHash)': ctx.schema,
+      'cschema (columnHash)': ctx.cschema,
+      'rschema (rowHash)': ctx.rschema,
     }.entries) {
-      debugPrint('\n--- ${entry.key} ---');
+      print('\n--- ${entry.key} ---');
       try {
         final s = await entry.value;
-        debugPrint(
+        print(
             'Rows: ${s.nRows}, Columns: ${s.columns.map((c) => "${c.name}:${c.type}").join(', ')}');
       } catch (e) {
-        debugPrint('ERROR: $e');
+        print('ERROR: $e');
       }
     }
 
     try {
-      final ns = await _ctx.namespace;
-      debugPrint('\nNamespace: $ns');
+      final ns = await ctx.namespace;
+      print('\nNamespace: $ns');
     } catch (e) {
-      debugPrint('\nNamespace ERROR: $e');
+      print('\nNamespace ERROR: $e');
     }
 
-    debugPrint('=== END REPORT ===');
+    print('=== END REPORT ===');
   }
 }

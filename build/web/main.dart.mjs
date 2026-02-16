@@ -423,6 +423,11 @@ class CompiledApp {
         }
         return null;
       },
+      _1358: () => {
+        return typeof process != "undefined" &&
+               Object.prototype.toString.call(process) == "[object process]" &&
+               process.platform == "win32"
+      },
       _1359: () => new WeakMap(),
       _1360: (map, o) => map.get(o),
       _1361: (map, o, v) => map.set(o, v),
@@ -432,6 +437,7 @@ class CompiledApp {
       _1374: s => JSON.stringify(s),
       _1375: s => printToConsole(s),
       _1376: (o, p, r) => o.replaceAll(p, () => r),
+      _1377: (o, p, r) => o.replace(p, () => r),
       _1378: Function.prototype.call.bind(String.prototype.toLowerCase),
       _1379: s => s.toUpperCase(),
       _1380: s => s.trim(),
@@ -545,6 +551,7 @@ class CompiledApp {
             constructor, [null, ...args]);
         return new factoryFunction();
       },
+      _1499: (o, p) => p in o,
       _1500: (o, p) => o[p],
       _1501: (o, p, v) => o[p] = v,
       _1502: (o, m, a) => o[m].apply(o, a),
@@ -596,6 +603,18 @@ class CompiledApp {
           setValue(wasmArray, wasmArrayOffset + i, jsArray[jsArrayOffset + i]);
         }
       },
+      _1515: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
+        const getValue = dartInstance.exports.$wasmI16ArrayGet;
+        for (let i = 0; i < length; i++) {
+          jsArray[jsArrayOffset + i] = getValue(wasmArray, wasmArrayOffset + i);
+        }
+      },
+      _1516: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
+        const setValue = dartInstance.exports.$wasmI16ArraySet;
+        for (let i = 0; i < length; i++) {
+          setValue(wasmArray, wasmArrayOffset + i, jsArray[jsArrayOffset + i]);
+        }
+      },
       _1517: (jsArray, jsArrayOffset, wasmArray, wasmArrayOffset, length) => {
         const getValue = dartInstance.exports.$wasmI32ArrayGet;
         for (let i = 0; i < length; i++) {
@@ -640,6 +659,7 @@ class CompiledApp {
         return s;
       },
       _1526: x0 => x0.index,
+      _1527: x0 => x0.groups,
       _1528: x0 => x0.flags,
       _1529: x0 => x0.multiline,
       _1530: x0 => x0.ignoreCase,
@@ -648,6 +668,16 @@ class CompiledApp {
       _1533: (x0,x1) => { x0.lastIndex = x1 },
       _1534: (o, p) => p in o,
       _1535: (o, p) => o[p],
+      _1538: () => new XMLHttpRequest(),
+      _1539: (x0,x1,x2,x3) => x0.open(x1,x2,x3),
+      _1541: (x0,x1,x2) => x0.setRequestHeader(x1,x2),
+      _1542: (x0,x1) => x0.send(x1),
+      _1543: x0 => x0.send(),
+      _1569: f => finalizeWrapper(f, function(x0) { return dartInstance.exports._1569(f,arguments.length,x0) }),
+      _1570: (x0,x1,x2) => x0.addEventListener(x1,x2),
+      _1571: f => finalizeWrapper(f, function(x0) { return dartInstance.exports._1571(f,arguments.length,x0) }),
+      _1576: x0 => new Blob(x0),
+      _1577: x0 => x0.getAllResponseHeaders(),
       _1580: (x0,x1) => x0.key(x1),
       _1581: x0 => x0.random(),
       _1584: () => globalThis.Math,
@@ -655,6 +685,12 @@ class CompiledApp {
       _1586: Function.prototype.call.bind(BigInt.prototype.toString),
       _1587: Function.prototype.call.bind(Number.prototype.toString),
       _1588: (d, digits) => d.toFixed(digits),
+      _1657: () => globalThis.XMLHttpRequest.DONE,
+      _1663: x0 => x0.readyState,
+      _1670: x0 => x0.status,
+      _1672: (x0,x1) => { x0.responseType = x1 },
+      _1673: x0 => x0.responseType,
+      _1674: x0 => x0.response,
       _3394: () => globalThis.window,
       _3729: x0 => x0.localStorage,
       _4162: x0 => x0.length,

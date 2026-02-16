@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sci_tercen_client/sci_client_service_factory.dart' show ServiceFactory;
 import 'package:sci_tercen_client/sci_service_factory_web.dart';
-import 'package:sci_tercen_context/sci_tercen_context.dart' hide Colors;
 
 import 'core/theme/app_theme.dart';
 import 'di/service_locator.dart';
@@ -15,25 +15,28 @@ void main() async {
 
   const useMocks = bool.fromEnvironment('USE_MOCKS', defaultValue: false);
 
-  AbstractOperatorContext? ctx;
+  ServiceFactory? factory;
+  String? taskId;
 
   if (!useMocks) {
     try {
-      final taskId = Uri.base.queryParameters['taskId'];
+      taskId = Uri.base.queryParameters['taskId'];
       if (taskId == null || taskId.isEmpty) {
         runApp(_buildErrorApp('Missing taskId parameter'));
         return;
       }
-      final factory = await createServiceFactoryForWebApp();
-      ctx = await tercenCtx(serviceFactory: factory, taskId: taskId);
+      print('PCA Explorer: initializing Tercen ServiceFactory...');
+      factory = await createServiceFactoryForWebApp();
+      print('PCA Explorer: ServiceFactory initialized, taskId=$taskId');
     } catch (e) {
-      debugPrint('Tercen init failed: $e');
+      print('PCA Explorer: Tercen init failed: $e');
     }
   }
 
   setupServiceLocator(
-    useMocks: ctx == null,
-    ctx: ctx,
+    useMocks: factory == null,
+    factory: factory,
+    taskId: taskId,
   );
 
   final prefs = await SharedPreferences.getInstance();
