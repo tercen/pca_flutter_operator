@@ -262,26 +262,38 @@ class TercenDataService implements DataService {
       final nc = data.numComponents;
       final nRows = data.loadings.length * data.scores.length;
 
-      // Build flat arrays — one row per ri x ci (loadings repeated across ci, scores repeated across ri)
+      // Match Shiny's getReturnData(): flat cross-tab with both loadings and scores
+      // For each (ri, ci) pair:
+      //   PC1..PCn     = loading values (broadcast per ri, same for all ci with same ri)
+      //   score1..scoren = score values (broadcast per ci, same for all ri with same ci)
       final outCi = <int>[];
       final outRi = <int>[];
-      final outPc = List.generate(nc, (_) => <double>[]);
+      final outLoading = List.generate(nc, (_) => <double>[]);
+      final outScore = List.generate(nc, (_) => <double>[]);
+
+      // Build lookup maps for scores by ci
+      final scoresByCi = <int, List<double>>{};
+      for (final score in data.scores) {
+        scoresByCi[score.ci] = score.values;
+      }
 
       for (final loading in data.loadings) {
         for (final score in data.scores) {
           outRi.add(loading.ri);
           outCi.add(score.ci);
           for (int k = 0; k < nc; k++) {
-            outPc[k].add(loading[k]);
+            outLoading[k].add(loading.values[k]);
+            outScore[k].add(score.values[k]);
           }
         }
       }
 
       await ctx.progress('Building table...', actual: 1, total: 3);
 
-      // Namespace prefix for output columns
-      final colNames = List.generate(nc, (k) => 'PC${k + 1}');
-      final nsMap = await ctx.addNamespace(colNames);
+      // Namespace prefix — loading cols: PC1..PCn, score cols: score1..scoren
+      final loadingNames = List.generate(nc, (k) => 'PC${k + 1}');
+      final scoreNames = List.generate(nc, (k) => 'score${k + 1}');
+      final nsMap = await ctx.addNamespace([...loadingNames, ...scoreNames]);
 
       final table = Table();
       table.nRows = nRows;
@@ -290,15 +302,28 @@ class TercenDataService implements DataService {
       table.columns.add(AbstractOperatorContext.makeInt32Column('.ci', outCi));
       table.columns.add(AbstractOperatorContext.makeInt32Column('.ri', outRi));
 
-      // Loading columns: PC1..PCn
+      // Loading columns: PC1..PCn (variable contributions)
       for (int k = 0; k < nc; k++) {
         final name = nsMap['PC${k + 1}'] ?? 'PC${k + 1}';
-        table.columns.add(AbstractOperatorContext.makeFloat64Column(name, outPc[k]));
+        table.columns.add(
+            AbstractOperatorContext.makeFloat64Column(name, outLoading[k]));
       }
+
+      // Score columns: score1..scoren (observation projections)
+      for (int k = 0; k < nc; k++) {
+        final name = nsMap['score${k + 1}'] ?? 'score${k + 1}';
+        table.columns.add(
+            AbstractOperatorContext.makeFloat64Column(name, outScore[k]));
+      }
+
+      print('PCA Explorer: saving table with $nRows rows, '
+          '${table.columns.length} columns '
+          '(.ci, .ri, $nc loadings, $nc scores)');
 
       await ctx.progress('Uploading...', actual: 2, total: 3);
       await ctx.saveTable(table);
       await ctx.progress('Done', actual: 3, total: 3);
+      print('PCA Explorer: save completed successfully');
     } catch (e) {
       print('PCA Explorer: Tercen save error: $e');
       await _printDiagnosticReport();
