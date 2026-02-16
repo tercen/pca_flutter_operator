@@ -167,9 +167,12 @@ class TercenDataService implements DataService {
             .add(PcaLoading(ri: ri, variable: varName, values: pcaResult.loadings[j]));
       }
 
-      // 11. Build variance — ALL components for screeplot
+      // 11. Build variance — first 10 components for screeplot (matching R's screeplot default)
       final variance = <PcVariance>[];
-      for (int k = 0; k < pcaResult.allEigenvalues.length; k++) {
+      final maxScreePCs = pcaResult.allEigenvalues.length < 10
+          ? pcaResult.allEigenvalues.length
+          : 10;
+      for (int k = 0; k < maxScreePCs; k++) {
         if (pcaResult.allEigenvalues[k] < 1e-12) continue;
         variance.add(PcVariance(
           label: 'PC${k + 1}',

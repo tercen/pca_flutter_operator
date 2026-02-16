@@ -76554,95 +76554,95 @@ s=1
 break
 case 1:return A.T(q,r)}})
 return A.U($async$qm,r)},
-cu(){var s=0,r=A.V(t.YW),q,p=2,o=[],n=this,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,e0,e1,e2,e3,e4,e5,e6,e7,e8,e9,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,g0,g1,g2,g3,g4,g5,g6,g7
-var $async$cu=A.R(function(g8,g9){if(g8===1){o.push(g9)
+cu(){var s=0,r=A.V(t.YW),q,p=2,o=[],n=this,m,l,k,j,i,h,g,f,e,d,c,b,a,a0,a1,a2,a3,a4,a5,a6,a7,a8,a9,b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,c0,c1,c2,c3,c4,c5,c6,c7,c8,c9,d0,d1,d2,d3,d4,d5,d6,d7,d8,d9,e0,e1,e2,e3,e4,e5,e6,e7,e8,e9,f0,f1,f2,f3,f4,f5,f6,f7,f8,f9,g0,g1,g2,g3,g4,g5,g6,g7,g8
+var $async$cu=A.R(function(g9,h0){if(g9===1){o.push(h0)
 s=p}for(;;)switch(s){case 0:p=4
 s=7
 return A.J(n.qm(),$async$cu)
-case 7:m=g9
-g7=J
+case 7:m=h0
+g8=J
 s=8
 return A.J(m.afB("Scale Spots","No"),$async$cu)
-case 8:l=g7.i(g9,"Yes")
-f1=t.i
-g7=J
+case 8:l=g8.i(h0,"Yes")
+f2=t.i
+g8=J
 s=9
-return A.J(m.po(A.aEi(),5,"Number of Components",f1),$async$cu)
-case 9:k=g7.aD(g9)
-g7=J
+return A.J(m.po(A.aEi(),5,"Number of Components",f2),$async$cu)
+case 9:k=g8.aD(h0)
+g8=J
 s=10
-return A.J(m.po(A.aEi(),0,"Subtract component",f1),$async$cu)
-case 10:j=g7.aD(g9)
+return A.J(m.po(A.aEi(),0,"Subtract component",f2),$async$cu)
+case 10:j=g8.aD(h0)
 s=11
 return A.J(m.hS("Loading data...",0,5),$async$cu)
-case 11:f2=t.s
+case 11:f3=t.s
 s=12
-return A.J(m.tH(A.h([".y",".ci",".ri"],f2)),$async$cu)
-case 12:i=g9
+return A.J(m.tH(A.h([".y",".ci",".ri"],f3)),$async$cu)
+case 12:i=h0
 s=13
 return A.J(m.hS("Loading column metadata...",1,5),$async$cu)
 case 13:s=14
 return A.J(m.vV(),$async$cu)
-case 14:h=g9
+case 14:h=h0
 s=15
 return A.J(m.hS("Loading row metadata...",2,5),$async$cu)
 case 15:s=16
 return A.J(m.xQ(),$async$cu)
-case 16:g=g9
+case 16:g=h0
 f=null
 p=18
 s=21
 return A.J(m.gvG(),$async$cu)
-case 21:f=g9
+case 21:f=h0
 p=4
 s=20
 break
 case 18:p=17
-g5=o.pop()
-f=A.h([],f2)
+g6=o.pop()
+f=A.h([],f3)
 s=20
 break
 case 17:s=4
 break
 case 20:e=[]
 d=[]
-f2=t.n
-c=A.h([],f2)
-for(f4=i.ax,f5=f4.$ti,f4=new A.bj(f4,f4.gH(0),f5.j("bj<au.E>")),f6=t.g,f5=f5.j("au.E");f4.B();){f7=f4.d
-b=f7==null?f5.a(f7):f7
-a=f6.a(b.y1)
+f3=t.n
+c=A.h([],f3)
+for(f5=i.ax,f6=f5.$ti,f5=new A.bj(f5,f5.gH(0),f6.j("bj<au.E>")),f7=t.g,f6=f6.j("au.E");f5.B();){f8=f5.d
+b=f8==null?f6.a(f8):f8
+a=f7.a(b.y1)
 if(a==null)continue
 switch(b.dy){case".ci":e=a
 break
 case".ri":d=a
 break
-case".y":f7=J.lt(a,new A.agN(),f1)
-f8=A.a3(f7,f7.$ti.j("aq.E"))
-c=f8
+case".y":f8=J.lt(a,new A.agN(),f2)
+f9=A.a3(f8,f8.$ti.j("aq.E"))
+c=f9
 break}}if(J.bH(c)===0){a5=A.bl("No .y values returned from ctx.select()")
-throw A.j(a5)}f4=t.S
-a0=A.aS(f4)
-a1=A.aS(f4)
+throw A.j(a5)}f5=t.S
+a0=A.aS(f5)
+a1=A.aS(f5)
 for(a2=0;a2<J.bH(e);++a2){J.cP(a0,A.agM(J.cT(e,a2)))
-J.cP(a1,A.agM(J.cT(d,a2)))}f5=a0
-f9=A.a3(f5,A.t(f5).c)
-B.b.f6(f9)
-a3=f9
-f5=a1
-g0=A.a3(f5,A.t(f5).c)
+J.cP(a1,A.agM(J.cT(d,a2)))}f6=a0
+g0=A.a3(f6,A.t(f6).c)
 B.b.f6(g0)
-a4=g0
-a5=A.v(f4,f4)
+a3=g0
+f6=a1
+g1=A.a3(f6,A.t(f6).c)
+B.b.f6(g1)
+a4=g1
+a5=A.v(f5,f5)
 for(a6=0;a6<J.bH(a3);++a6)J.dX(a5,J.cT(a3,a6),a6)
 a7=a5
-a8=A.v(f4,f4)
+a8=A.v(f5,f5)
 for(a9=0;a9<J.bH(a4);++a9)J.dX(a8,J.cT(a4,a9),a9)
 b0=a8
 b1=J.bH(a3)
 b2=J.bH(a4)
 b3=b1
 b4=J.eR(b3,t.Ly)
-for(b5=0;b5<b3;++b5)J.dX(b4,b5,A.bf(b2,0,!1,f1))
+for(b5=0;b5<b3;++b5)J.dX(b4,b5,A.bf(b2,0,!1,f2))
 b6=b4
 for(b7=0;b7<J.bH(e);++b7){b8=A.agM(J.cT(e,b7))
 b9=A.agM(J.cT(d,b7))
@@ -76656,12 +76656,12 @@ return A.J(m.hS("Computing PCA...",3,5),$async$cu)
 case 22:A.cn("PCA Explorer: scaleSpots="+A.q(l)+", nComponents="+A.q(k)+", subtractComponent="+A.q(j))
 A.cn("PCA Explorer: matrix "+A.q(b1)+"x"+A.q(b2))
 a5=t.zg
-c0=A.aAj(A.h([A.h([3,-1,-1,-1],f2),A.h([-1,3,-1,-1],f2),A.h([-1,-1,3,-1],f2),A.h([-1,-1,-1,3],f2)],a5))
+c0=A.aAj(A.h([A.h([3,-1,-1,-1],f3),A.h([-1,3,-1,-1],f3),A.h([-1,-1,3,-1],f3),A.h([-1,-1,-1,3],f3)],a5))
 a8=c0
-f1=A.Y(a8).j("a1<1,o>")
-a8=A.a3(new A.a1(a8,new A.agO(),f1),f1.j("aq.E"))
+f2=A.Y(a8).j("a1<1,o>")
+a8=A.a3(new A.a1(a8,new A.agO(),f2),f2.j("aq.E"))
 A.cn("PCA Explorer: Jacobi self-test="+A.q(a8)+" (expected: [4, 4, 4, 0])")
-c1=A.aAj(A.h([A.h([2,1],f2),A.h([1,2],f2)],a5))
+c1=A.aAj(A.h([A.h([2,1],f3),A.h([1,2],f3)],a5))
 a5=c1
 a8=A.Y(a5).j("a1<1,o>")
 a5=A.a3(new A.a1(a5,new A.agP(),a8),a8.j("aq.E"))
@@ -76669,7 +76669,7 @@ A.cn("PCA Explorer: Jacobi self-test2="+A.q(a5)+" (expected: [3, 1])")
 a5=Math.min(b1-1,A.id(b2))
 c2=A.aNm(b6,Math.min(A.id(k),a5),l,j)
 a5=c2.e
-A.cn("PCA Explorer: top 5 eigenvalues="+A.q(A.dF(a5,0,A.j5(5,"count",f4),A.Y(a5).c).cZ(0)))
+A.cn("PCA Explorer: top 5 eigenvalues="+A.q(A.dF(a5,0,A.j5(5,"count",f5),A.Y(a5).c).cZ(0)))
 A.cn("PCA Explorer: last eigenvalue="+A.q(B.b.gaj(c2.e))+" (should be ~0 for centered data)")
 A.cn("PCA Explorer: totalVariance="+B.d.U(B.b.k7(c2.e,0,new A.agQ()),2))
 c3=n.I2(h)
@@ -76681,61 +76681,62 @@ for(c8=0;c8<b2;++c8){c9=J.cT(a4,c8)
 d0="var_"+A.q(c9)
 d1=J.cT(c4,c8)
 if(d1!=null)for(a5=d1.gfS(),a5=a5.gS(a5);a5.B();){d2=a5.gK()
-if(!B.c.aS(d2.a,".")){g1=J.db(d2.b)
-d0=B.c.u(g1,".")?B.b.gaj(g1.split(".")):g1
+if(!B.c.aS(d2.a,".")){g2=J.db(d2.b)
+d0=B.c.u(g2,".")?B.b.gaj(g2.split(".")):g2
 break}}J.cP(c7,new A.jA(c9,d0,c2.b[c8]))}d3=A.h([],t.iU)
-for(d4=0;d4<c2.e.length;++d4){if(c2.e[d4]<1e-12)continue
-a5=d4
-a8=c2.e[d4]
+d4=c2.e.length<10?c2.e.length:10
+for(d5=0;d5<d4;++d5){if(c2.e[d5]<1e-12)continue
+a5=d5
+a8=c2.e[d5]
 c2.toString
 J.cP(d3,new A.jz("PC"+A.q(a5+1),a8))}a5=t.N
-d5=A.aS(a5)
-for(a8=J.bF(f);a8.B();){d6=a8.gK()
-f1=d6
-if(B.c.u(f1,"."))f1=B.b.gaj(f1.split("."))
-J.cP(d5,f1)}for(a8=c3,a8=new A.d4(a8,a8.r,a8.e);a8.B();){d7=a8.d
-for(f1=d7.gbJ(),f1=f1.gS(f1);f1.B();){d8=f1.gK()
-if(!J.aIe(d8,".")){f2=d8
+d6=A.aS(a5)
+for(a8=J.bF(f);a8.B();){d7=a8.gK()
+f2=d7
 if(B.c.u(f2,"."))f2=B.b.gaj(f2.split("."))
-J.cP(d5,f2)}}}a8=d5
-g2=A.a3(a8,A.t(a8).c)
-d9=g2
-e0=A.h([],t.bc)
-for(e1=0,a8=t.z;e1<b1;++e1){e2=J.cT(a3,e1)
-d1=J.cT(c3,e1)
-e3=d1==null?A.v(a5,a8):d1
-e4=A.v(a5,a5)
-for(f1=d9,f2=f1.length,b5=0;b5<f1.length;f1.length===f2||(0,A.C)(f1),++b5){e5=f1[b5]
-e6=""
-for(f5=e3.gfS(),f5=f5.gS(f5);f5.B();){e7=f5.gK()
-f6=e7.a
-if(B.c.u(f6,"."))f6=B.b.gaj(f6.split("."))
-if(f6===e5){f5=e7.b
-g3=f5==null?null:J.db(f5)
-e6=g3==null?"":g3
-break}}J.dX(e4,e5,e6)}J.cP(e0,new A.fv(e2,e4))}e8=J.bH(d9)!==0?J.k3(d9):""
-if(J.YS(f)){g4=J.k3(f)
-e9=B.c.u(g4,".")?B.b.gaj(g4.split(".")):g4
-if(J.as1(d9,e9))e8=e9}s=23
+J.cP(d6,f2)}for(a8=c3,a8=new A.d4(a8,a8.r,a8.e);a8.B();){d8=a8.d
+for(f2=d8.gbJ(),f2=f2.gS(f2);f2.B();){d9=f2.gK()
+if(!J.aIe(d9,".")){f3=d9
+if(B.c.u(f3,"."))f3=B.b.gaj(f3.split("."))
+J.cP(d6,f3)}}}a8=d6
+g3=A.a3(a8,A.t(a8).c)
+e0=g3
+e1=A.h([],t.bc)
+for(e2=0,a8=t.z;e2<b1;++e2){e3=J.cT(a3,e2)
+d1=J.cT(c3,e2)
+e4=d1==null?A.v(a5,a8):d1
+e5=A.v(a5,a5)
+for(f2=e0,f3=f2.length,b5=0;b5<f2.length;f2.length===f3||(0,A.C)(f2),++b5){e6=f2[b5]
+e7=""
+for(f6=e4.gfS(),f6=f6.gS(f6);f6.B();){e8=f6.gK()
+f7=e8.a
+if(B.c.u(f7,"."))f7=B.b.gaj(f7.split("."))
+if(f7===e6){f6=e8.b
+g4=f6==null?null:J.db(f6)
+e7=g4==null?"":g4
+break}}J.dX(e5,e6,e7)}J.cP(e1,new A.fv(e3,e5))}e9=J.bH(e0)!==0?J.k3(e0):""
+if(J.YS(f)){g5=J.k3(f)
+f0=B.c.u(g5,".")?B.b.gaj(g5.split(".")):g5
+if(J.as1(e0,f0))e9=f0}s=23
 return A.J(m.hS("Done",5,5),$async$cu)
 case 23:A.cn("PCA Explorer: SUCCESS \u2014 "+J.bH(c5)+" scores, "+J.bH(c7)+" loadings, "+J.bH(d3)+" PCs")
-A.cn("PCA Explorer: annotationFields="+A.q(d9))
-A.cn("PCA Explorer: defaultColorBy="+A.q(e8))
+A.cn("PCA Explorer: annotationFields="+A.q(e0))
+A.cn("PCA Explorer: defaultColorBy="+A.q(e9))
 if(J.bH(c5)!==0){a5=J.k3(c5)
 a8=J.k3(c5).b
-A.cn("PCA Explorer: first score ci="+a5.a+", values="+A.q(A.dF(a8,0,A.j5(3,"count",f4),A.Y(a8).c).cZ(0)))}if(J.bH(e0)!==0)A.cn("PCA Explorer: first annotation ci="+J.k3(e0).a+", fields="+J.k3(e0).b.k(0))
+A.cn("PCA Explorer: first score ci="+a5.a+", values="+A.q(A.dF(a8,0,A.j5(3,"count",f5),A.Y(a8).c).cZ(0)))}if(J.bH(e1)!==0)A.cn("PCA Explorer: first annotation ci="+J.k3(e1).a+", fields="+J.k3(e1).b.k(0))
 a5=c2.r
-a8=e8
-q=new A.zk(c5,c7,d3,e0,a5,d9,a8)
+a8=e9
+q=new A.zk(c5,c7,d3,e1,a5,e0,a8)
 s=1
 break
 p=2
 s=6
 break
 case 4:p=3
-g6=o.pop()
-f0=A.ak(g6)
-A.cn("PCA Explorer: Tercen data loading error: "+A.q(f0))
+g7=o.pop()
+f1=A.ak(g7)
+A.cn("PCA Explorer: Tercen data loading error: "+A.q(f1))
 s=24
 return A.J(n.oi(),$async$cu)
 case 24:a5=n.c.cu()
