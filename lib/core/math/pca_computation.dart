@@ -43,6 +43,15 @@ class PcaResult {
 /// 3. Eigendecompose G using Jacobi algorithm
 /// 4. Recover scores and loadings from eigenvectors
 class PcaComputation {
+  /// Test the Jacobi eigenvalue algorithm with a known matrix.
+  /// Returns the eigenvalues (sorted descending).
+  static List<double> testEigen(List<List<double>> A) {
+    final n = A.length;
+    final (eigenvalues, _) = _jacobiEigen(
+        List.generate(n, (i) => List<double>.from(A[i])), n);
+    return eigenvalues;
+  }
+
   /// Compute PCA from a data matrix.
   ///
   /// [X] is n_obs x n_vars (each row = one observation, each col = one variable).

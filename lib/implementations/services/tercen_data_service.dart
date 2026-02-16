@@ -110,6 +110,24 @@ class TercenDataService implements DataService {
       await ctx.progress('Computing PCA...', actual: 3, total: 5);
       print('PCA Explorer: scaleSpots=$scaleSpots, nComponents=$nComponentsProp, subtractComponent=$subtractComponent');
       print('PCA Explorer: matrix ${nObs}x$nVars');
+
+      // Jacobi self-test: 4x4 matrix with known eigenvalues [4, 4, 4, 0]
+      // (4I - J, where J is all-ones matrix — simulates centered data)
+      final testEV = PcaComputation.testEigen([
+        [3, -1, -1, -1],
+        [-1, 3, -1, -1],
+        [-1, -1, 3, -1],
+        [-1, -1, -1, 3],
+      ]);
+      print('PCA Explorer: Jacobi self-test=${testEV.map((v) => v.toStringAsFixed(4)).toList()} (expected: [4, 4, 4, 0])');
+
+      // Second test: 2x2 with known eigenvalues [3, 1]
+      final testEV2 = PcaComputation.testEigen([
+        [2, 1],
+        [1, 2],
+      ]);
+      print('PCA Explorer: Jacobi self-test2=${testEV2.map((v) => v.toStringAsFixed(4)).toList()} (expected: [3, 1])');
+
       final pcaResult = PcaComputation.compute(
         X: X,
         scale: scaleSpots,
@@ -117,6 +135,7 @@ class TercenDataService implements DataService {
         subtractComponent: subtractComponent,
       );
       print('PCA Explorer: top 5 eigenvalues=${pcaResult.allEigenvalues.take(5).toList()}');
+      print('PCA Explorer: last eigenvalue=${pcaResult.allEigenvalues.last} (should be ~0 for centered data)');
       print('PCA Explorer: totalVariance=${pcaResult.allEigenvalues.fold(0.0, (a, b) => a + b).toStringAsFixed(2)}');
 
       // 8. Build index maps from column/row metadata
