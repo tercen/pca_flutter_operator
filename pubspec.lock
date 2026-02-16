@@ -301,20 +301,16 @@ packages:
   sci_tercen_client:
     dependency: "direct main"
     description:
-      path: sci_tercen_client
-      ref: "1.12.0"
-      resolved-ref: "3d6bdaff93b4e3c2453221852522a18943ddb75f"
-      url: "https://github.com/tercen/sci_tercen_client"
-    source: git
+      path: "C:/Users/Work/Documents/GitHub/sci_tercen_client/sci_tercen_client"
+      relative: false
+    source: path
     version: "1.12.0"
   sci_tercen_context:
     dependency: "direct main"
     description:
-      path: sci_tercen_context
-      ref: "1.12.0"
-      resolved-ref: "3d6bdaff93b4e3c2453221852522a18943ddb75f"
-      url: "https://github.com/tercen/sci_tercen_client"
-    source: git
+      path: "C:/Users/Work/Documents/GitHub/sci_tercen_client/sci_tercen_context"
+      relative: false
+    source: path
     version: "1.12.0"
   sci_tercen_model:
     dependency: transitive
