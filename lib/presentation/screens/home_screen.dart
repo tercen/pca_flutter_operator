@@ -159,8 +159,10 @@ class _MainContent extends StatelessWidget {
                   ),
                 ),
               ),
-            // Color legend overlay (top-right, for modes that use color)
-            if (provider.viewMode != ViewMode.variation)
+            // Color legend overlay (top-right, for modes that use color).
+            // Pairs mode handles its own legend inside PairsMatrixView.
+            if (provider.viewMode != ViewMode.variation &&
+                provider.viewMode != ViewMode.pairs)
               Positioned(
                 top: AppSpacing.md,
                 right: AppSpacing.md,

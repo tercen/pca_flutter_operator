@@ -7,12 +7,18 @@ class PairsCellPainter extends CustomPainter {
   final int pcIndexX;
   final int pcIndexY;
   final Color Function(int ci) colorForSample;
+  final bool showXTicks;
+  final bool showYTicks;
+  final Color tickColor;
 
   PairsCellPainter({
     required this.scores,
     required this.pcIndexX,
     required this.pcIndexY,
     required this.colorForSample,
+    this.showXTicks = false,
+    this.showYTicks = false,
+    this.tickColor = const Color(0xFF9CA3AF),
   });
 
   @override
@@ -53,6 +59,7 @@ class PairsCellPainter extends CustomPainter {
     final adjRangeX = adjMaxX - adjMinX;
     final adjRangeY = adjMaxY - adjMinY;
 
+    // Draw data points
     for (final s in scores) {
       final normX = (s[pcIndexX] - adjMinX) / adjRangeX;
       final normY = (s[pcIndexY] - adjMinY) / adjRangeY;
@@ -64,6 +71,40 @@ class PairsCellPainter extends CustomPainter {
         3,
         Paint()..color = colorForSample(s.ci),
       );
+    }
+
+    // Tick marks on outer edges — 5 ticks, inward-pointing
+    final tickPaint = Paint()
+      ..color = tickColor
+      ..strokeWidth = 1.0;
+
+    const numTicks = 4;
+    const tickLen = 4.0;
+
+    if (showYTicks) {
+      // Horizontal ticks on the left edge, pointing right
+      for (var i = 0; i <= numTicks; i++) {
+        final t = i / numTicks;
+        final y = plotTop + (1 - t) * plotHeight;
+        canvas.drawLine(
+          Offset(plotLeft, y),
+          Offset(plotLeft + tickLen, y),
+          tickPaint,
+        );
+      }
+    }
+
+    if (showXTicks) {
+      // Vertical ticks on the bottom edge, pointing up
+      for (var i = 0; i <= numTicks; i++) {
+        final t = i / numTicks;
+        final x = plotLeft + t * plotWidth;
+        canvas.drawLine(
+          Offset(x, plotTop + plotHeight),
+          Offset(x, plotTop + plotHeight - tickLen),
+          tickPaint,
+        );
+      }
     }
   }
 
