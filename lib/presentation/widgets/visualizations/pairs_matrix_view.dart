@@ -24,169 +24,174 @@ class PairsMatrixView extends StatelessWidget {
     final n = provider.numComponents;
     final borderColor = isDark ? AppColorsDark.border : AppColors.border;
     final textColor = isDark ? AppColorsDark.textPrimary : AppColors.textPrimary;
-    // Distinct fill for diagonal label cells
     final diagBg = isDark ? const Color(0xFF374151) : AppColors.neutral100;
+    // Visible tick color — neutral700 in light mode, neutral400 in dark
+    final tickColor =
+        isDark ? const Color(0xFF9CA3AF) : const Color(0xFF374151);
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Square matrix with outer PC labels
-          Expanded(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                // Reserve space for the outer axis labels
-                const outerLabelW = 28.0; // left: row (PC) labels
-                const outerLabelH = 22.0; // top: column (PC) labels
+    // Fixed layout constants
+    const outerLabelW = 28.0; // left row-label column
+    const outerLabelH = 22.0; // top col-label row
+    const legendGap = 16.0;
+    const legendReserve = 130.0; // width reserved for legend
+    const padding = 16.0;
 
-                final availW = constraints.maxWidth - outerLabelW;
-                final availH = constraints.maxHeight - outerLabelH;
-                // Constrain to square
-                final gridSize = min(availW, availH);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Compute the largest square grid that fits, leaving room for labels
+        // and the legend alongside.
+        final availW =
+            constraints.maxWidth - padding * 2 - outerLabelW - legendGap - legendReserve;
+        final availH = constraints.maxHeight - padding * 2 - outerLabelH;
+        final gridSize = min(availW, availH).clamp(0.0, double.infinity);
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // ── Top row: spacer + column PC labels ──────────────────
-                    Row(
-                      children: [
-                        SizedBox(width: outerLabelW),
-                        SizedBox(
-                          width: gridSize,
-                          height: outerLabelH,
-                          child: Row(
-                            children: List.generate(
-                              n,
-                              (col) => Expanded(
-                                child: Center(
-                                  child: Text(
-                                    'PC${col + 1}',
-                                    style: TextStyle(
-                                      color: textColor,
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
+        // ── Build the column-header + grid block ───────────────────────────
+        final matrixBlock = Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Column (PC) labels above the grid
+            Row(
+              children: [
+                SizedBox(width: outerLabelW),
+                SizedBox(
+                  width: gridSize,
+                  height: outerLabelH,
+                  child: Row(
+                    children: List.generate(
+                      n,
+                      (col) => Expanded(
+                        child: Center(
+                          child: Text(
+                            'PC${col + 1}',
+                            style: TextStyle(
+                              color: textColor,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            // Row labels (left) + the grid
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Rotated row (PC) labels
+                SizedBox(
+                  width: outerLabelW,
+                  height: gridSize,
+                  child: Column(
+                    children: List.generate(
+                      n,
+                      (row) => Expanded(
+                        child: Center(
+                          child: RotatedBox(
+                            quarterTurns: 3,
+                            child: Text(
+                              'PC${row + 1}',
+                              style: TextStyle(
+                                color: textColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
+                  ),
+                ),
 
-                    // ── Matrix rows + left row PC labels ────────────────────
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Left column: rotated row labels
-                        SizedBox(
-                          width: outerLabelW,
-                          height: gridSize,
-                          child: Column(
-                            children: List.generate(
-                              n,
-                              (row) => Expanded(
-                                child: Center(
-                                  child: RotatedBox(
-                                    quarterTurns: 3,
+                // The cell grid
+                SizedBox(
+                  width: gridSize,
+                  height: gridSize,
+                  child: Column(
+                    children: List.generate(
+                      n,
+                      (row) => Expanded(
+                        child: Row(
+                          children: List.generate(n, (col) {
+                            if (row == col) {
+                              // Diagonal: distinct background + PC label
+                              return Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: diagBg,
+                                    border:
+                                        Border.all(color: borderColor, width: 1.0),
+                                  ),
+                                  child: Center(
                                     child: Text(
                                       'PC${row + 1}',
                                       style: TextStyle(
                                         color: textColor,
-                                        fontSize: 10,
+                                        fontSize: 11,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          ),
-                        ),
+                              );
+                            }
 
-                        // The grid
-                        SizedBox(
-                          width: gridSize,
-                          height: gridSize,
-                          child: Column(
-                            children: List.generate(
-                              n,
-                              (row) => Expanded(
-                                child: Row(
-                                  children: List.generate(n, (col) {
-                                    if (row == col) {
-                                      // Diagonal: distinct background + PC label
-                                      return Expanded(
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: diagBg,
-                                            border: Border.all(
-                                                color: borderColor, width: 1.0),
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              'PC${row + 1}',
-                                              style: TextStyle(
-                                                color: textColor,
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }
-
-                                    // Off-diagonal: scatter cell
-                                    // Show Y ticks on leftmost column,
-                                    // X ticks on bottom row
-                                    return Expanded(
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: borderColor, width: 1.0),
-                                        ),
-                                        child: CustomPaint(
-                                          painter: PairsCellPainter(
-                                            scores: data.scores,
-                                            pcIndexX: col,
-                                            pcIndexY: row,
-                                            colorForSample:
-                                                provider.getColorForSample,
-                                            showYTicks: col == 0,
-                                            showXTicks: row == n - 1,
-                                            tickColor: borderColor,
-                                          ),
-                                          child: const SizedBox.expand(),
-                                        ),
-                                      ),
-                                    );
-                                  }),
+                            // Off-diagonal scatter cell.
+                            // Y ticks on rightmost column (pointing right),
+                            // X ticks on bottom row (pointing down).
+                            return Expanded(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: borderColor, width: 1.0),
+                                ),
+                                child: CustomPaint(
+                                  painter: PairsCellPainter(
+                                    scores: data.scores,
+                                    pcIndexX: col,
+                                    pcIndexY: row,
+                                    colorForSample: provider.getColorForSample,
+                                    showYTicks: col == n - 1,
+                                    showXTicks: row == n - 1,
+                                    tickColor: tickColor,
+                                  ),
+                                  child: const SizedBox.expand(),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
                         ),
-                      ],
+                      ),
                     ),
-                  ],
-                );
-              },
+                  ),
+                ),
+              ],
             ),
-          ),
+          ],
+        );
 
-          // ── Color legend to the right, outside the matrix ──────────────
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0),
-            child: ColorLegend(
-              colorMap: provider.colorMap,
-              isDark: isDark,
+        // ── Centre the matrix+legend group within the available space ──────
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(padding),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                matrixBlock,
+                const SizedBox(width: legendGap),
+                // Legend stays immediately adjacent — never floats to edge
+                ColorLegend(colorMap: provider.colorMap, isDark: isDark),
+              ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

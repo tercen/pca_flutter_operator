@@ -7,8 +7,8 @@ class PairsCellPainter extends CustomPainter {
   final int pcIndexX;
   final int pcIndexY;
   final Color Function(int ci) colorForSample;
-  final bool showXTicks;
-  final bool showYTicks;
+  final bool showXTicks; // bottom row: ticks point downward (outside plot area)
+  final bool showYTicks; // right column: ticks point rightward (outside plot area)
   final Color tickColor;
 
   PairsCellPainter({
@@ -18,14 +18,14 @@ class PairsCellPainter extends CustomPainter {
     required this.colorForSample,
     this.showXTicks = false,
     this.showYTicks = false,
-    this.tickColor = const Color(0xFF9CA3AF),
+    this.tickColor = const Color(0xFF374151),
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     if (scores.isEmpty) return;
 
-    const padding = 6.0;
+    const padding = 4.0;
     final plotLeft = padding;
     final plotTop = padding;
     final plotWidth = size.width - padding * 2;
@@ -73,35 +73,35 @@ class PairsCellPainter extends CustomPainter {
       );
     }
 
-    // Tick marks on outer edges — 5 ticks, inward-pointing
+    // Outward-pointing tick marks on outer panel edges
     final tickPaint = Paint()
       ..color = tickColor
-      ..strokeWidth = 1.0;
+      ..strokeWidth = 1.5;
 
     const numTicks = 4;
-    const tickLen = 4.0;
+    const tickLen = 5.0;
 
     if (showYTicks) {
-      // Horizontal ticks on the left edge, pointing right
+      // Y ticks on RIGHT edge, pointing rightward (outward from plot)
       for (var i = 0; i <= numTicks; i++) {
         final t = i / numTicks;
         final y = plotTop + (1 - t) * plotHeight;
         canvas.drawLine(
-          Offset(plotLeft, y),
-          Offset(plotLeft + tickLen, y),
+          Offset(plotLeft + plotWidth, y),
+          Offset(plotLeft + plotWidth + tickLen, y),
           tickPaint,
         );
       }
     }
 
     if (showXTicks) {
-      // Vertical ticks on the bottom edge, pointing up
+      // X ticks on BOTTOM edge, pointing downward (outward from plot)
       for (var i = 0; i <= numTicks; i++) {
         final t = i / numTicks;
         final x = plotLeft + t * plotWidth;
         canvas.drawLine(
           Offset(x, plotTop + plotHeight),
-          Offset(x, plotTop + plotHeight - tickLen),
+          Offset(x, plotTop + plotHeight + tickLen),
           tickPaint,
         );
       }
