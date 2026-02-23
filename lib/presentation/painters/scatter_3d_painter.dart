@@ -129,7 +129,7 @@ class Scatter3dPainter extends CustomPainter {
 
     final cubePaint = Paint()
       ..color = axisColor
-      ..strokeWidth = 1.5
+      ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
     final projectedCorners = corners.map((c) {
@@ -257,8 +257,8 @@ class Scatter3dPainter extends CustomPainter {
     const labelGap = 0.08; // Gap between edge and label center
 
     final tickPaint = Paint()
-      ..color = textColor.withValues(alpha: 0.6)
-      ..strokeWidth = 1.2;
+      ..color = textColor.withValues(alpha: 0.8)
+      ..strokeWidth = 1.5;
 
     for (var i = 0; i <= numTicks; i++) {
       final t = i / numTicks;
@@ -297,8 +297,7 @@ class Scatter3dPainter extends CustomPainter {
       final tp = TextPainter(
         text: TextSpan(
           text: valueStr,
-          style: TextStyle(
-              color: textColor.withValues(alpha: 0.7), fontSize: 10),
+          style: TextStyle(color: textColor, fontSize: 10),
         ),
         textDirection: TextDirection.ltr,
       )..layout();

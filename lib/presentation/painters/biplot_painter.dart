@@ -93,7 +93,7 @@ class BiplotPainter extends CustomPainter {
     // --- Bounding box ---
     final boxPaint = Paint()
       ..color = axisColor
-      ..strokeWidth = 1.5
+      ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
 
     final boxRect =
@@ -103,8 +103,8 @@ class BiplotPainter extends CustomPainter {
     // --- Grid lines through origin ---
     final origin = toScreen(0, 0);
     final gridPaint = Paint()
-      ..color = axisColor.withValues(alpha: 0.4)
-      ..strokeWidth = 0.5;
+      ..color = axisColor.withValues(alpha: 0.5)
+      ..strokeWidth = 1.0;
     // Only draw if origin is inside the plot area
     if (origin.dx > plotLeft && origin.dx < plotLeft + plotWidth) {
       canvas.drawLine(
@@ -126,7 +126,7 @@ class BiplotPainter extends CustomPainter {
       textColor: textColor,
       tickPaint: Paint()
         ..color = axisColor
-        ..strokeWidth = 1.0,
+        ..strokeWidth = 1.5,
     );
 
     // --- Tick marks and labels on Y axis (left edge) ---
@@ -140,7 +140,7 @@ class BiplotPainter extends CustomPainter {
       textColor: textColor,
       tickPaint: Paint()
         ..color = axisColor
-        ..strokeWidth = 1.0,
+        ..strokeWidth = 1.5,
       alignRight: true,
     );
 
@@ -193,6 +193,10 @@ class BiplotPainter extends CustomPainter {
         ..strokeWidth = 1.5
         ..style = PaintingStyle.stroke;
 
+      // Clip arrows to plot frame so zoom can't push them outside the axes
+      canvas.save();
+      canvas.clipRect(boxRect);
+
       for (var i = 0; i < loadings.length; i++) {
         if (magnitudes[i] < cutoff) continue;
 
@@ -232,37 +236,53 @@ class BiplotPainter extends CustomPainter {
         );
         canvas.drawLine(tipScreen, p1, currentArrowPaint);
         canvas.drawLine(tipScreen, p2, currentArrowPaint);
+      }
 
-        // Show variable name only on hover
-        if (isHoveredLoading) {
-          final nameTp = TextPainter(
-            text: TextSpan(
-              text: l.variable,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-              ),
+      canvas.restore();
+
+      // Show hover label outside clip so it can render near the edge
+      for (var i = 0; i < loadings.length; i++) {
+        if (magnitudes[i] < cutoff) continue;
+        if (hoveredLoadingIndex != i) continue;
+
+        final l = loadings[i];
+        final lx = l[pcIndexX] * loadingScale;
+        final ly = l[pcIndexY] * loadingScale;
+        final tipScreen = toScreen(lx, ly);
+
+        // Clamp label position to stay inside plot area
+        final clampedTip = Offset(
+          tipScreen.dx.clamp(plotLeft, plotLeft + plotWidth),
+          tipScreen.dy.clamp(plotTop, plotTop + plotHeight),
+        );
+
+        final nameTp = TextPainter(
+          text: TextSpan(
+            text: l.variable,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
             ),
-            textDirection: TextDirection.ltr,
-          )..layout();
+          ),
+          textDirection: TextDirection.ltr,
+        )..layout();
 
-          // Background for readability
-          final labelRect = Rect.fromLTWH(
-            tipScreen.dx + 6,
-            tipScreen.dy - nameTp.height / 2 - 2,
-            nameTp.width + 6,
-            nameTp.height + 4,
-          );
-          canvas.drawRRect(
-            RRect.fromRectAndRadius(labelRect, const Radius.circular(3)),
-            Paint()
-              ..color = (isDark ? const Color(0xFF1F2937) : Colors.white)
-                  .withValues(alpha: 0.9),
-          );
-          nameTp.paint(canvas,
-              Offset(tipScreen.dx + 9, tipScreen.dy - nameTp.height / 2));
-        }
+        // Background for readability
+        final labelRect = Rect.fromLTWH(
+          clampedTip.dx + 6,
+          clampedTip.dy - nameTp.height / 2 - 2,
+          nameTp.width + 6,
+          nameTp.height + 4,
+        );
+        canvas.drawRRect(
+          RRect.fromRectAndRadius(labelRect, const Radius.circular(3)),
+          Paint()
+            ..color = (isDark ? const Color(0xFF1F2937) : Colors.white)
+                .withValues(alpha: 0.9),
+        );
+        nameTp.paint(canvas,
+            Offset(clampedTip.dx + 9, clampedTip.dy - nameTp.height / 2));
       }
     }
 
@@ -331,8 +351,7 @@ class BiplotPainter extends CustomPainter {
       final tp = TextPainter(
         text: TextSpan(
           text: valueStr,
-          style: TextStyle(
-              color: textColor.withValues(alpha: 0.7), fontSize: 10),
+          style: TextStyle(color: textColor, fontSize: 10),
         ),
         textDirection: TextDirection.ltr,
       )..layout();

@@ -39,11 +39,11 @@ class VariationPainter extends CustomPainter {
 
     final gridPaint = Paint()
       ..color = gridColor
-      ..strokeWidth = 0.5;
+      ..strokeWidth = 1.0;
 
     final axisPaint = Paint()
-      ..color = textColor.withValues(alpha: 0.5)
-      ..strokeWidth = 1;
+      ..color = textColor.withValues(alpha: 0.8)
+      ..strokeWidth = 1.5;
 
     // Title
     final titleTp = TextPainter(
@@ -105,7 +105,7 @@ class VariationPainter extends CustomPainter {
     final borderPaint = Paint()
       ..color = barBorderColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
+      ..strokeWidth = 1.0;
 
     for (var i = 0; i < barCount; i++) {
       final v = variance[i];

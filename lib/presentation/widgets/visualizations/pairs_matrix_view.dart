@@ -36,7 +36,7 @@ class PairsMatrixView extends StatelessWidget {
                   return Expanded(
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(color: borderColor, width: 0.5),
+                        border: Border.all(color: borderColor, width: 1.0),
                       ),
                       child: Center(
                         child: Text(
@@ -54,7 +54,7 @@ class PairsMatrixView extends StatelessWidget {
                 return Expanded(
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(color: borderColor, width: 0.5),
+                      border: Border.all(color: borderColor, width: 1.0),
                     ),
                     child: CustomPaint(
                       painter: PairsCellPainter(

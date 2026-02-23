@@ -41,6 +41,10 @@ class _BiplotViewState extends State<BiplotView> {
       hoveredLoadingIndex: _hoveredLoadingIndex,
     );
 
+    final hintColor = widget.isDark
+        ? const Color(0xFF9CA3AF)
+        : const Color(0xFF6B7280);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return MouseRegion(
@@ -51,9 +55,28 @@ class _BiplotViewState extends State<BiplotView> {
               setState(() => _hoveredLoadingIndex = null);
             }
           },
-          child: CustomPaint(
-            size: Size(constraints.maxWidth, constraints.maxHeight),
-            painter: _painter,
+          child: Stack(
+            children: [
+              CustomPaint(
+                size: Size(constraints.maxWidth, constraints.maxHeight),
+                painter: _painter,
+              ),
+              Positioned(
+                top: 6,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Text(
+                    'Hover arrow to see label',
+                    style: TextStyle(
+                      color: hintColor,
+                      fontSize: 11,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       },
