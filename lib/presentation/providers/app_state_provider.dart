@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../../di/service_locator.dart';
 import '../../domain/models/pca_data.dart';
@@ -36,6 +38,7 @@ class AppStateProvider extends ChangeNotifier {
       }
       print('PCA Explorer: AppState colorBy=$_colorBy, labelBy=$_labelBy');
       _updateColorMapping();
+      unawaited(savePcaResults());
     } catch (e) {
       _error = e.toString();
     } finally {
@@ -210,19 +213,22 @@ class AppStateProvider extends ChangeNotifier {
   // --- ACTIONS: Save state ---
   bool _hasSaved = false;
   bool _isSaving = false;
+  String? _saveError;
   bool get hasSaved => _hasSaved;
   bool get isSaving => _isSaving;
+  String? get saveError => _saveError;
 
   Future<void> savePcaResults() async {
     if (_data == null || _hasSaved || _isSaving) return;
     _isSaving = true;
+    _saveError = null;
     notifyListeners();
 
     try {
       await _dataService.saveResults(_data!);
       _hasSaved = true;
     } catch (e) {
-      _error = 'Save failed: $e';
+      _saveError = e.toString();
       print('Save error: $e');
     } finally {
       _isSaving = false;
